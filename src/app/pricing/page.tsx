@@ -6,7 +6,7 @@ export const metadata = { title: "Pricing — Appistic" };
 export default function Pricing() {
   return (
     <main className="mx-auto max-w-4xl px-6 py-16">
-      <Link href="/" className="text-sm a-mut hover:text-white">← Appistic</Link>
+      <Link href="/" className="text-sm a-mut hover:opacity-70">← Appistic</Link>
       <h1 className="mt-6 text-center text-4xl font-extrabold tracking-tight">Simple pricing.</h1>
       <p className="mt-3 text-center a-mut">Start free. Upgrade only when your business grows.</p>
 
@@ -19,7 +19,7 @@ export default function Pricing() {
               <li key={f} className="flex gap-2.5"><span style={{ color: "var(--acc)" }}>✓</span><span className="a-mut">{f}</span></li>
             ))}
           </ul>
-          <Link href="/signup" className="a-card mt-8 block py-3 text-center font-semibold hover:border-[var(--acc)]">Start free</Link>
+          <Link href="/signup" className="a-ghost mt-8 block py-3 text-center">Start free</Link>
         </div>
 
         <div className="a-card p-8" style={{ borderColor: "var(--acc)" }}>
@@ -41,7 +41,7 @@ export default function Pricing() {
       </div>
 
       <div className="mt-14 a-card p-6 text-sm a-mut">
-        <p className="font-semibold text-white">What we don&apos;t have (on purpose)</p>
+        <p className="font-semibold">What we don&apos;t have (on purpose)</p>
         <p className="mt-2">No &ldquo;Agency&rdquo; plan. No &ldquo;Enterprise&rdquo; sales call. No per-seat math. One free plan, one Pro plan. That&apos;s it.</p>
       </div>
 

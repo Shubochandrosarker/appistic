@@ -32,7 +32,7 @@ export const cards = pgTable(
     email: text("email").notNull().default(""),
     website: text("website").notNull().default(""),
     address: text("address").notNull().default(""),
-    theme: jsonb("theme").$type<Theme>().notNull().default({ preset: "midnight", accent: "#7c5cff" }),
+    theme: jsonb("theme").$type<Theme>().notNull().default({ preset: "snow", accent: "#ea3a2e" }),
     links: jsonb("links").$type<LinkItem[]>().notNull().default([]),
     products: jsonb("products").$type<ProductItem[]>().notNull().default([]),
     leadFormEnabled: boolean("lead_form_enabled").notNull().default(true),

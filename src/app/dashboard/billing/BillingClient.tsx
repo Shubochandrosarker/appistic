@@ -43,7 +43,7 @@ export default function BillingClient({
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-12">
-      <Link href="/dashboard" className="text-sm a-mut hover:text-white">← Dashboard</Link>
+      <Link href="/dashboard" className="text-sm a-mut hover:opacity-70">← Dashboard</Link>
       <h1 className="mt-3 text-3xl font-extrabold">Billing</h1>
       <p className="mt-1 a-mut">
         {email} · Current plan: <b className="text-white">{plan === "pro" ? "Pro" : "Free"}</b>

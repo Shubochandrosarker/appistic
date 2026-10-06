@@ -40,7 +40,7 @@ export default function AnalyticsClient({
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-10">
-      <Link href="/dashboard" className="text-sm a-mut hover:text-white">← Dashboard</Link>
+      <Link href="/dashboard" className="text-sm a-mut hover:opacity-70">← Dashboard</Link>
       <header className="mt-2 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold">{card.brandName} — Analytics</h1>
         {plan === "pro" ? (

@@ -1,21 +1,55 @@
 @import "tailwindcss";
 
+/* Appistic design system — HiHello-inspired (Oct 2026)
+   accent #ea3a2e · Nunito Sans · white surfaces · pill buttons · soft shadows */
 :root {
-  --bg: #0b0b12;
-  --card: #14141f;
-  --line: #262636;
-  --txt: #f4f4f8;
-  --mut: #9a9aad;
-  --acc: #7c5cff;
+  --bg: #f7f8fa;
+  --card: #ffffff;
+  --line: #e7e9f0;
+  --txt: #171923;
+  --mut: #6b7280;
+  --acc: #ea3a2e;
+  --acc-soft: rgba(234, 58, 46, 0.09);
 }
 
 html, body { background: var(--bg); color: var(--txt); }
 * { -webkit-tap-highlight-color: transparent; }
 
-.a-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; }
-.a-btn { background: var(--acc); color: #fff; border-radius: 12px; font-weight: 600; transition: filter .15s; }
-.a-btn:hover { filter: brightness(1.12); }
+.a-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(23, 25, 35, 0.06);
+}
+.a-btn {
+  background: var(--acc);
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 700;
+  transition: filter .15s, transform .1s;
+}
+.a-btn:hover { filter: brightness(1.07); }
+.a-btn:active { transform: scale(.98); }
 .a-btn:disabled { opacity: .5; }
-.a-input { background: #0e0e17; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; width: 100%; color: var(--txt); outline: none; }
+.a-ghost {
+  background: #fff;
+  color: var(--txt);
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  font-weight: 700;
+  transition: border-color .15s;
+}
+.a-ghost:hover { border-color: var(--acc); }
+.a-input {
+  background: #fbfbfd;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 14px;
+  width: 100%;
+  color: var(--txt);
+  outline: none;
+  transition: border-color .15s;
+}
+.a-input::placeholder { color: #9aa1b1; }
 .a-input:focus { border-color: var(--acc); }
 .a-mut { color: var(--mut); }

@@ -15,10 +15,12 @@ type CardData = {
 };
 
 const THEMES: { id: string; name: string; grad: string }[] = [
+  { id: "snow", name: "Snow", grad: "linear-gradient(135deg,#f7f8fa,#eef1f6)" },
+  { id: "linen", name: "Linen", grad: "linear-gradient(135deg,#faf6f2,#f3ece4)" },
+  { id: "sky", name: "Sky", grad: "linear-gradient(135deg,#f2f7fc,#e4eef7)" },
+  { id: "mint", name: "Mint", grad: "linear-gradient(135deg,#f2faf6,#e3f2ea)" },
+  { id: "blush", name: "Blush", grad: "linear-gradient(135deg,#fdf3f2,#fae6e3)" },
   { id: "midnight", name: "Midnight", grad: "linear-gradient(135deg,#0b0b12,#161627)" },
-  { id: "ocean", name: "Ocean", grad: "linear-gradient(135deg,#071a2b,#0d2f4b)" },
-  { id: "forest", name: "Forest", grad: "linear-gradient(135deg,#082016,#0f3a28)" },
-  { id: "sunset", name: "Sunset", grad: "linear-gradient(135deg,#1f0e14,#3d1526)" },
   { id: "mono", name: "Mono", grad: "linear-gradient(135deg,#101010,#1d1d1d)" },
 ];
 
@@ -66,7 +68,7 @@ export default function EditorClient({ initial }: { initial: CardData }) {
     <main className="mx-auto max-w-3xl px-6 py-10">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href="/dashboard" className="text-sm a-mut hover:text-white">← Dashboard</Link>
+          <Link href="/dashboard" className="text-sm a-mut hover:opacity-70">← Dashboard</Link>
           <h1 className="mt-1 text-2xl font-bold">Edit card</h1>
         </div>
         <div className="flex items-center gap-3">
@@ -81,13 +83,13 @@ export default function EditorClient({ initial }: { initial: CardData }) {
       {c.published && (
         <div className="a-card mt-5 flex flex-wrap items-center gap-4 p-5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`/qr/${c.slug}`} alt="QR" className="h-24 w-24 rounded-xl bg-white p-1.5" />
+          <img src={`/qr/${c.slug}`} alt="QR" className="h-24 w-24 rounded-xl border border-[var(--line)] bg-white p-1.5" />
           <div className="min-w-0 text-sm">
             <p className="font-semibold">Dynamic QR — live</p>
             <p className="a-mut">appistic.com/c/{c.slug}</p>
             <div className="mt-2 flex gap-3 text-xs">
               <a href={`/qr/${c.slug}`} download={`${c.slug}-qr.png`} className="a-btn px-4 py-2">Download QR (PNG)</a>
-              <a href={`/c/${c.slug}`} target="_blank" rel="noreferrer" className="underline a-mut hover:text-white">Open live card ↗</a>
+              <a href={`/c/${c.slug}`} target="_blank" rel="noreferrer" className="underline a-mut hover:opacity-70">Open live card ↗</a>
             </div>
           </div>
         </div>
@@ -119,7 +121,7 @@ export default function EditorClient({ initial }: { initial: CardData }) {
           ))}
         </div>
         <div className="mt-4 flex items-center gap-3">
-          <input type="color" value={c.theme.accent} onChange={(e) => set("theme", { ...c.theme, accent: e.target.value })} className="h-10 w-14 cursor-pointer rounded-lg border border-[var(--line)] bg-transparent" />
+          <input type="color" value={c.theme.accent} onChange={(e) => set("theme", { ...c.theme, accent: e.target.value })} className="h-10 w-14 cursor-pointer rounded-lg border border-[var(--line)]" />
           <span className="text-sm a-mut">Accent color (buttons & highlights)</span>
         </div>
       </Section>

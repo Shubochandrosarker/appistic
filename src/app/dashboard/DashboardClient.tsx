@@ -67,7 +67,7 @@ export default function DashboardClient({
           {user.plan !== "pro" && (
             <Link href="/dashboard/billing" className="a-btn px-4 py-2 text-xs">Upgrade to Pro — $5/mo</Link>
           )}
-          <button onClick={logout} className="a-mut hover:text-white">Log out</button>
+          <button onClick={logout} className="a-mut hover:opacity-70">Log out</button>
         </div>
       </header>
 
@@ -109,16 +109,16 @@ export default function DashboardClient({
               </div>
               <div className="mt-4 flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`/qr/${c.slug}`} alt="QR" className="h-16 w-16 rounded-lg bg-white p-1" />
+                <img src={`/qr/${c.slug}`} alt="QR" className="h-16 w-16 rounded-lg border border-[var(--line)] bg-white p-1" />
                 <div className="flex flex-col gap-1.5 text-xs">
                   <Link href={`/editor/${c.id}`} className="a-btn px-4 py-2 text-center text-xs">Edit</Link>
                   <a href={`/qr/${c.slug}`} download={`${c.slug}-qr.png`} className="px-4 py-2 text-center a-card hover:border-[var(--acc)]">Download QR</a>
                 </div>
               </div>
               <div className="mt-4 flex gap-4 text-xs">
-                <Link href={`/analytics/${c.id}`} className="underline a-mut hover:text-white">Analytics & leads</Link>
+                <Link href={`/analytics/${c.id}`} className="underline a-mut hover:opacity-70">Analytics & leads</Link>
                 {c.published && (
-                  <a href={`/c/${c.slug}`} target="_blank" rel="noreferrer" className="underline a-mut hover:text-white">View live ↗</a>
+                  <a href={`/c/${c.slug}`} target="_blank" rel="noreferrer" className="underline a-mut hover:opacity-70">View live ↗</a>
                 )}
               </div>
             </div>

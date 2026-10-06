@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   if (taken.length) slug = `${slug}-${Math.random().toString(36).slice(2, 6)}`;
   const [row] = await db
     .insert(cards)
-    .values({ userId: uid, slug, brandName, headline: String(body?.headline || "").slice(0, 120) })
+    .values({ userId: uid, slug, brandName, headline: String(body?.headline || "").slice(0, 120), theme: { preset: "snow", accent: "#ea3a2e" } })
     .returning();
   return NextResponse.json({ card: row });
 }

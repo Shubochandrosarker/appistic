@@ -10,8 +10,8 @@ export default function Home() {
           App<span style={{ color: "var(--acc)" }}>istic</span>
         </span>
         <div className="flex items-center gap-4 text-sm">
-          <Link href="/pricing" className="a-mut hover:text-white">Pricing</Link>
-          <Link href="/login" className="a-mut hover:text-white">Log in</Link>
+          <Link href="/pricing" className="a-mut hover:opacity-70">Pricing</Link>
+          <Link href="/login" className="a-mut hover:opacity-70">Log in</Link>
           <Link href="/signup" className="a-btn px-4 py-2 text-sm">Get your card</Link>
         </div>
       </nav>
@@ -37,7 +37,7 @@ export default function Home() {
         {/* phone mock */}
         <div className="mx-auto mt-14 max-w-sm a-card p-6 text-left">
           <div className="flex items-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold" style={{ background: "#ffffff14", border: "2px solid var(--acc)" }}>R</div>
+            <div className="flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold" style={{ background: "var(--acc-soft)", border: "2px solid var(--acc)" }}>R</div>
             <div>
               <p className="font-bold">Rahim Store</p>
               <p className="text-xs" style={{ color: "var(--acc)" }}>Electronics · Dhaka</p>
@@ -48,7 +48,7 @@ export default function Home() {
               <div key={s} className="rounded-xl border border-[var(--line)] px-3 py-2.5 a-mut">{s}</div>
             ))}
           </div>
-          <div className="mt-3 rounded-xl px-3 py-2.5 text-sm" style={{ background: "#7c5cff1f", color: "var(--acc)" }}>
+          <div className="mt-3 rounded-xl px-3 py-2.5 text-sm" style={{ background: "var(--acc-soft)", color: "var(--acc)" }}>
             ✅ 12 new leads this week
           </div>
         </div>
