@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0b0b12;
+  --card: #14141f;
+  --line: #262636;
+  --txt: #f4f4f8;
+  --mut: #9a9aad;
+  --acc: #7c5cff;
+}
+
+html, body { background: var(--bg); color: var(--txt); }
+* { -webkit-tap-highlight-color: transparent; }
+
+.a-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; }
+.a-btn { background: var(--acc); color: #fff; border-radius: 12px; font-weight: 600; transition: filter .15s; }
+.a-btn:hover { filter: brightness(1.12); }
+.a-btn:disabled { opacity: .5; }
+.a-input { background: #0e0e17; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; width: 100%; color: var(--txt); outline: none; }
+.a-input:focus { border-color: var(--acc); }
+.a-mut { color: var(--mut); }
