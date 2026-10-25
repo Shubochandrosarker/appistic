@@ -114,6 +114,22 @@ test("fresh migrations and replay preserve legacy records and enforce transactio
     process.env.PADDLE_WEBHOOK_SECRET = previousWebhookSecret;
     process.env.PADDLE_PRO_MONTHLY_PRICE_ID = previousMonthlyPrice;
 
+    await sql`delete from leads where card_id = ${cardA}`;
+    await sql`insert into leads (org_id, card_id, name, email)
+      select ${orgA}, ${cardA}, 'Capacity Fixture', 'capacity-' || n || '@example.test'
+      from generate_series(1, 49) as n`;
+    const leadAttempt = async (email: string) => sql.begin(async (tx) => {
+      await tx`select id from users where id = ${userA} for update`;
+      const count = await tx`select count(*)::int as count from leads l inner join cards c on c.id = l.card_id where c.user_id = ${userA} and l.created_at >= date_trunc('month', now())`;
+      if (Number(count[0].count) >= 50) return false;
+      await tx`insert into leads (org_id, card_id, name, email) values (${orgA}, ${cardA}, 'Concurrent Lead', ${email})`;
+      return true;
+    });
+    const leadResults = await Promise.all([leadAttempt(`race-lead-a-${userA}@example.test`), leadAttempt(`race-lead-b-${userA}@example.test`)]);
+    assert.equal(leadResults.filter(Boolean).length, 1);
+    const leadTotal = await sql`select count(*)::int as count from leads where card_id = ${cardA}`;
+    assert.equal(Number(leadTotal[0].count), 50);
+
     await sql`insert into rate_limit_buckets (key, window_started_at, count) values ('fixture-key', now(), 1)`;
     await sql`insert into rate_limit_buckets (key, window_started_at, count) values ('fixture-key', now(), 1) on conflict (key) do update set count = rate_limit_buckets.count + 1`;
     const rateRows = await sql`select count from rate_limit_buckets where key = 'fixture-key'`;
