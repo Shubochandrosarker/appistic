@@ -1,0 +1,8 @@
+Appistic v1.0.9 static verification evidence
+Tested SHA: d38586a85190d364af6f5dfd75ecce3216936a6d
+Run date: 2026-10-23 Asia/Dhaka
+Commands: npm run check; npm audit --omit=dev --audit-level=high; npm run db:check
+Result: PASS.
+`npm run check` passed typecheck, ESLint with zero warnings, 9 security tests,
+and the Next.js 16.4.3 production build. `npm audit` reported 0 vulnerabilities.
+`npm run db:check` reported the Drizzle schema is consistent.

@@ -1,0 +1,21 @@
+Appistic v1.0.9 focused authorization, legacy-login, and local webhook evidence
+Tested SHA: d38586a85190d364af6f5dfd75ecce3216936a6d
+Run date: 2026-10-23 Asia/Dhaka
+
+Cross-tenant fixture: two synthetic users attempted card mutation, analytics,
+and CSV export against the other user's card. All returned 404 and no data was
+returned.
+
+Legacy login fixture: a synthetic user's bcrypt hash was replaced in the
+isolated database with the legacy SHA-256 format. Login returned 200 and the
+stored hash changed back to a bcrypt prefix.
+
+Production configuration fixture: invoking `src/instrumentation.ts` with
+NODE_ENV=production, NEXT_RUNTIME=nodejs, and an invalid short AUTH_SECRET
+failed with exit code 1 and `Missing required production configuration`.
+
+Local Paddle handler fixture: unsigned event returned 401; signed event with
+an unconfigured price returned 200 without changing a Free user; duplicate
+active event was idempotent; an older cancellation did not override the active
+state; a newer cancellation did. These are local signed fixtures, not official
+Paddle sandbox proof.
