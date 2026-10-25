@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import test from "node:test";
 import postgres from "postgres";
+import { handlePaddleWebhook } from "../src/lib/paddle-hook";
+import { closeDatabase } from "../src/lib/db";
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -68,6 +70,50 @@ test("fresh migrations and replay preserve legacy records and enforce transactio
     await sql`insert into paddle_webhook_events (event_id, event_type) values ('evt_fixture', 'transaction.completed') on conflict (event_id) do nothing`;
     const eventRows = await sql`select count(*)::int as count from paddle_webhook_events where event_id = 'evt_fixture'`;
     assert.equal(Number(eventRows[0].count), 1);
+
+    const previousWebhookSecret = process.env.PADDLE_WEBHOOK_SECRET;
+    const previousMonthlyPrice = process.env.PADDLE_PRO_MONTHLY_PRICE_ID;
+    process.env.PADDLE_WEBHOOK_SECRET = "integration-paddle-secret";
+    process.env.PADDLE_PRO_MONTHLY_PRICE_ID = "price_good";
+    const unsigned = await handlePaddleWebhook(new Request("http://localhost/api/webhooks/paddle", {
+      method: "POST",
+      body: JSON.stringify({ event_id: "evt_unsigned", event_type: "subscription.activated", data: {} }),
+    }));
+    assert.equal(unsigned.status, 401);
+    const signedWebhook = async (event: Record<string, unknown>) => {
+      const raw = JSON.stringify(event);
+      const ts = Math.floor(Date.now() / 1000).toString();
+      const signature = crypto.createHmac("sha256", process.env.PADDLE_WEBHOOK_SECRET!).update(`${ts}:${raw}`).digest("hex");
+      return handlePaddleWebhook(new Request("http://localhost/api/webhooks/paddle", {
+        method: "POST",
+        headers: { "paddle-signature": `ts=${ts};h1=${signature}` },
+        body: raw,
+      }));
+    };
+    const activeAt = new Date(Date.now()).toISOString();
+    const baseEvent = (eventId: string, type: string, status: string, occurredAt: string, priceId = "price_good") => ({
+      event_id: eventId,
+      event_type: type,
+      occurred_at: occurredAt,
+      data: {
+        id: "sub_integration",
+        status,
+        items: [{ price: { id: priceId } }],
+        custom_data: { userId: userA },
+      },
+    });
+    assert.equal((await signedWebhook(baseEvent("evt_wrong_price", "subscription.activated", "active", activeAt, "price_bad"))).status, 200);
+    assert.equal((await sql`select plan from users where id = ${userA}`)[0].plan, "free");
+    assert.equal((await signedWebhook(baseEvent("evt_active", "subscription.activated", "active", activeAt))).status, 200);
+    assert.equal((await signedWebhook(baseEvent("evt_active", "subscription.activated", "active", activeAt))).status, 200);
+    assert.equal((await sql`select plan from users where id = ${userA}`)[0].plan, "pro");
+    assert.equal((await signedWebhook(baseEvent("evt_old_cancel", "subscription.canceled", "canceled", new Date(Date.now() - 10_000).toISOString()))).status, 200);
+    assert.equal((await sql`select plan from users where id = ${userA}`)[0].plan, "pro");
+    assert.equal((await signedWebhook(baseEvent("evt_new_cancel", "subscription.canceled", "canceled", new Date(Date.now() + 1_000).toISOString()))).status, 200);
+    assert.equal((await sql`select plan from users where id = ${userA}`)[0].plan, "free");
+    process.env.PADDLE_WEBHOOK_SECRET = previousWebhookSecret;
+    process.env.PADDLE_PRO_MONTHLY_PRICE_ID = previousMonthlyPrice;
+
     await sql`insert into rate_limit_buckets (key, window_started_at, count) values ('fixture-key', now(), 1)`;
     await sql`insert into rate_limit_buckets (key, window_started_at, count) values ('fixture-key', now(), 1) on conflict (key) do update set count = rate_limit_buckets.count + 1`;
     const rateRows = await sql`select count from rate_limit_buckets where key = 'fixture-key'`;
@@ -75,5 +121,6 @@ test("fresh migrations and replay preserve legacy records and enforce transactio
   } finally {
     await sql`truncate rate_limit_buckets, paddle_webhook_events, sessions, leads, events, cards, users cascade`;
     await sql.end({ timeout: 5 });
+    await closeDatabase();
   }
 });

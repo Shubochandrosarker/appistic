@@ -6,3 +6,4 @@ const url = process.env.DATABASE_URL || "postgres://appistic_dev:appistic_dev@12
 const client = postgres(url, { max: 10 });
 export const db = drizzle(client, { schema });
 export { schema };
+export const closeDatabase = () => client.end({ timeout: 5 });
