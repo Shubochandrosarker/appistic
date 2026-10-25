@@ -38,4 +38,11 @@ GitHub Actions run `40203334605` on `main` at `3cd86af...` concluded `failure` b
 
 ## Safety boundary
 
-No production deployment, production migration, DNS change, credential rotation, live payment request, provider sandbox request, or customer-data access was performed. All database tests used synthetic fixtures in isolated PostgreSQL. Existing card rows and stable QR routes were preserved by the code changes.
+During the initial recovery audit, no production deployment or production
+migration was performed. After the owner explicitly authorized Hostinger
+deployment on 2026-10-25, an existing Appistic database backup was taken, the
+additive migrations were applied, and the recovery container was cut over with
+the prior image retained for rollback. No DNS change, credential rotation, live
+payment request, provider sandbox request, or customer-data export was
+performed. Existing card rows and stable QR routes were preserved by the code
+changes.

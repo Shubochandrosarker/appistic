@@ -1,10 +1,22 @@
 # Appistic v1.0.9 production smoke
 
-Git SHA: `b0b9856981ac1cd7c3bc5e1741a737eee81b772a`
+Git SHA: `3d53b63b8e5956a04aabe7deca7eb1dbbbd68530`
 
-Status: BLOCKED
+Status: BLOCKED (limited deployment smoke PASS)
 
-No production deployment or production-safe smoke was authorized or executed.
-Staging credentials, provider sandbox evidence, owner approval, and production
-monitoring access are unavailable. Local standalone smoke is recorded separately
-and is not production evidence.
+The owner explicitly authorized Hostinger deployment on 2026-10-25. The active
+container is `appistic:3d53b63`; the previous `appistic:1.0.8` container remains
+available as `appistic-1.0.8-rollback-20261025`.
+
+Observed after cutover:
+
+- `https://appistic.com/`, `/login`, and `/pricing`: HTTP 200.
+- Direct origin `/` and `/login`: HTTP 200.
+- Public unauthenticated analytics GET: HTTP 401 with `Cache-Control: private,
+  no-store` and `Vary: Cookie`.
+- Migration ledger: `0000`, `0001`, `0002`, `0003`, `0004`.
+- App container logs: no startup/runtime errors during the smoke window.
+
+This limited smoke does not prove Paddle payment/webhook behavior,
+browser/mobile/a11y acceptance, monitoring readiness, or full v1.0.9 release
+approval. Those gates remain BLOCKED.

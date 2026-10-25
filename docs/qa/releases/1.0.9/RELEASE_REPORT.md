@@ -2,7 +2,8 @@
 
 Release/step: 1.0.9 security and release recovery
 Git base -> tested SHA: `7536de3` -> `b0b9856981ac1cd7c3bc5e1741a737eee81b772a`
-Status: BLOCKED
+Deployment SHA: `3d53b63b8e5956a04aabe7deca7eb1dbbbd68530`
+Status: BLOCKED (deployed, but release gates remain blocked)
 
 ## Changes and affected files
 
@@ -31,6 +32,30 @@ Status: BLOCKED
 
 Detailed evidence is in `test-evidence/` and `test-results.json`.
 
+## Authorized Hostinger deployment
+
+The owner explicitly authorized deployment and a GitHub update on 2026-10-25.
+The pushed recovery branch is `codex/appistic-hardening` at `3d53b63`. GitHub's
+`Appistic CI` workflow was disabled manually before the push, so this update did
+not trigger GitHub Actions.
+
+Hostinger deployment evidence:
+
+- `https://appistic.com/`, `/login`, and `/pricing` returned HTTP 200 through
+  Cloudflare after cutover.
+- The direct origin returned HTTP 200 for `/` and `/login`; unauthenticated
+  analytics returned HTTP 401 with `Cache-Control: private, no-store` and
+  `Vary: Cookie`.
+- The active container is `appistic:3d53b63` on the Hostinger VPS. The previous
+  `appistic:1.0.8` container is retained as
+  `appistic-1.0.8-rollback-20261025`.
+- The existing database was backed up before deployment. The migration ledger
+  contains `0000` through `0004`; the additive recovery migrations completed.
+- The deployed app log had no startup/runtime errors during the smoke window.
+
+This is deployment and availability evidence, not proof of Paddle payment,
+webhook reconciliation, browser/mobile/a11y acceptance, or release unblocking.
+
 ## Security and compatibility
 
 The P0 billing grant path, Free-limit inconsistency, unpublished-card lead write, lead/view event confusion, analytics cache exposure, Docker install fallback, and tracked generated cache are fixed in source and covered locally. Existing card data, published state, slugs, and QR target routes are not modified by the recovery.
@@ -40,8 +65,8 @@ Official Paddle documentation confirms that `transaction.completed` describes a 
 ## Provider and environment limitations
 
 - GitHub Actions run `40203334605` on `main` failed before the job started because the GitHub account is locked due to a billing issue. It had no steps and no retrievable log archive. The CI gate is therefore BLOCKED, not PASS.
-- Docker standalone build reached the lockfile install but failed with `ECONNRESET` while downloading npm packages inside the container. The Dockerfile no longer has an install fallback; this was not converted to a pass.
-- Official Paddle sandbox, staging, owner approval, production smoke, and a real provider reconciliation are unavailable and were not attempted.
+- The first local Docker build reached the lockfile install but failed with `ECONNRESET`; the Hostinger build for `3d53b63` completed successfully. The Dockerfile no longer has an install fallback.
+- Official Paddle sandbox, staging, full owner release approval, and a real provider reconciliation remain unavailable. A limited production availability smoke was executed after the explicitly authorized deployment.
 - Desktop/mobile browser E2E and keyboard-a11y automation are not configured in this checkout. Local HTTP/standalone smoke is not browser E2E evidence.
 
 ## Open failures
@@ -50,4 +75,8 @@ G3, G6, G7, G8, and G9 remain BLOCKED. The release gatekeeper referenced by the 
 
 ## Next authorized action
 
-Restore GitHub Actions billing, push/open the isolated recovery branch for CI, and provide authorized staging plus official Paddle sandbox access. Then rerun the full desktop/mobile/a11y, provider, staging, owner-approval, CI, and production-safe smoke gates. Do not deploy or advance to v1.1 until every required v1.0.9 gate is evidenced as PASS.
+Do not advance to v1.1. Restore GitHub Actions billing only when CI is intended
+to run, then rerun the full desktop/mobile/a11y, provider, staging,
+owner-approval, CI, and production-safe smoke gates. Keep the deployed
+v1.0.9 recovery on the rollback path until the remaining release gates are
+evidenced as PASS.
