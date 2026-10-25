@@ -2,7 +2,7 @@
 
 Release/step: 1.0.9 security and compatibility hardening
 
-Git base -> tested SHA: `d081552e2105b6f239fbed84bc1a2365e1810f8b` -> `d38586a85190d364af6f5dfd75ecce3216936a6d`
+Git base -> tested SHA: `d081552e2105b6f239fbed84bc1a2365e1810f8b` -> `e1337ec0f1a4c44fe58b5e58adf0d815177e446e`
 
 Status: BLOCKED
 

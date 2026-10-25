@@ -1,5 +1,5 @@
 Appistic v1.0.9 isolated database evidence
-Tested SHA: d38586a85190d364af6f5dfd75ecce3216936a6d
+Tested SHA: e1337ec0f1a4c44fe58b5e58adf0d815177e446e
 Run date: 2026-10-23 Asia/Dhaka
 Commands: npm run db:migrate; npm run test:db
 Environment: isolated PostgreSQL 16 Docker container on 127.0.0.1:55433;
