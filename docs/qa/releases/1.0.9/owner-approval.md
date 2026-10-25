@@ -1,7 +1,7 @@
-# Owner approval
+# Appistic v1.0.9 owner approval
 
-Status: BLOCKED — no owner approval for staging or production deployment was
-provided in this task. This is intentionally not marked PASS.
+Git SHA: `b0b9856981ac1cd7c3bc5e1741a737eee81b772a`
 
-No live credentials, deployment authorization, DNS changes, production
-migrations, or provider activation were performed.
+No owner approval for staging or production deployment was supplied in this
+recovery. The release remains BLOCKED; this file is a limitation record, not an
+approval.

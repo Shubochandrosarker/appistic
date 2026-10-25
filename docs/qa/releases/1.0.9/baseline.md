@@ -1,13 +1,14 @@
-# Appistic v1.0.9 verified baseline
+# Appistic v1.0.9 recovery baseline
 
-Date: 2026-10-23 (Asia/Dhaka)
+Date: 2026-10-25 (Asia/Dhaka)
 
 ## Repository
 
 - Remote: `https://github.com/Shubochandrosarker/appistic.git`
-- Base branch: `main`
-- Tested base SHA: `d081552e2105b6f239fbed84bc1a2365e1810f8b`
+- Audited `main` HEAD: `3cd86afed6e9d83b7bfa5a039faecb74abfde2a3`
 - Working branch: `codex/appistic-hardening`
+- Recovery base: `7536de3`
+- Code-tested SHA: `b0b9856981ac1cd7c3bc5e1741a737eee81b772a`
 - Initial working tree: clean
 - Checkout: `D:\\All Projects\\WPISTIC-GALAXY-ECOSYSTEM\\APPISTIC\\appistic-repo`
 
@@ -16,29 +17,25 @@ Date: 2026-10-23 (Asia/Dhaka)
 - Node: `v22.18.0`
 - npm: `10.9.3`
 - Docker: `29.9.2`
-- Docker Compose: `v5.6.1`
-- PostgreSQL CLI: unavailable on host
-- `npm ci`: PASS (installed 98 packages; npm reported 3 production audit findings)
-- `npx tsc --noEmit`: PASS
-- `npm run build`: PASS on the baseline checkout
-- `npm audit --omit=dev --audit-level=high`: FAIL; findings include the installed Next.js/PostCSS and Drizzle versions
+- PostgreSQL: isolated Docker `postgres:16-alpine` on `127.0.0.1:55432`
+- Package scripts: `test`, `test:db`, `typecheck`, `lint`, `build`, `db:migrate`, `db:check`
+- CI workflow: `.github/workflows/ci.yml`
+- Release gatekeeper script: not present in this checkout; machine-readable evidence was reviewed directly.
 
-## Current repository shape
+## Scope findings confirmed before edits
 
-The checkout is a small Next.js App Router application with one initial Drizzle migration and no automated test, lint, integration, browser, CI, or release-evidence scripts. The repository package version is `1.0.0`; this differs from the supplied controller's research-time `v1.0.8` note and was verified against the remote HEAD above.
+- `transaction.completed` could grant Pro.
+- `entitlements.ts`, tests, README, and the v1.0.9 policy disagreed on the Free card limit.
+- Public lead capture did not require `published=true` and recorded `view` instead of `lead`.
+- Authenticated analytics responses did not set explicit private/no-store headers.
+- Docker could silently fall back from `npm ci` to `npm install`.
+- `tsconfig.tsbuildinfo` was tracked.
+- The required controller is available at the Appistic parent folder. The controller-referenced `01_PHASE_1_0_9_SECURITY.md` and `02_PHASE_1_1_FREE_CARD.md` files were not present, so the attached recovery prompt is the active v1.0.9 specification.
 
-## Baseline risks verified in source
+## External CI diagnosis
 
-- Authentication uses a SHA-256 secret-derived password hash and has a development fallback secret.
-- Session tokens are stateless and cannot be revoked server-side.
-- API mutation routes do not enforce an origin/CSRF policy.
-- Analytics `GET /api/track` does not authenticate or verify card ownership.
-- Card and lead limits are check-then-write operations without transaction/concurrency protection.
-- Card editor input accepts arbitrary URL values and the public renderer emits them as links/images.
-- Paddle webhook handling lacks durable event idempotency and accepts unconfigured signature policy paths.
-- Environment examples contain credential-like values instead of fake placeholders.
-- Public production, staging, Paddle sandbox, Stripe Connect, email, DNS, and owner-approval evidence are not available in this checkout.
+GitHub Actions run `40203334605` on `main` at `3cd86af...` concluded `failure` before starting its only `verify` job. GitHub's annotation says: `The job was not started because your account is locked due to a billing issue.` The job had no steps and `gh run view --log-failed` returned `log not found`. This is an external CI-account blocker, not an application test result.
 
-## Scope boundary
+## Safety boundary
 
-The supplied v1.2-v2.0 documents require v1.0.9 and v1.1 to pass first. The v1.0.9 and v1.1 phase files referenced by the controller were not present in the supplied packet, so this baseline follows the controller and acceptance matrix for security and free-card compatibility without inventing missing commercial requirements. Provider-dependent gates remain blocked until the required credentials, approvals, staging environment, and authorized smoke tests exist.
+No production deployment, production migration, DNS change, credential rotation, live payment request, provider sandbox request, or customer-data access was performed. All database tests used synthetic fixtures in isolated PostgreSQL. Existing card rows and stable QR routes were preserved by the code changes.

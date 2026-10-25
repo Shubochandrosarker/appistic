@@ -1,11 +1,10 @@
-Appistic v1.0.9 post-commit HTTP smoke evidence
-Tested SHA: e1337ec0f1a4c44fe58b5e58adf0d815177e446e
-Run date: 2026-10-23 Asia/Dhaka
-Environment: local Next.js dev server on http://localhost:3300 with isolated
-PostgreSQL and synthetic account/card data.
-Result: PASS.
-Observed statuses: signup 200; first card 200; second card 200; third Free
-card 402; publish 200; public track 200; owner analytics 200; anonymous
-analytics 401; public card 200; QR redirect 302; cross-origin mutation 403;
-lead capture 200. The QR redirect resolved to the canonical local `/c/` page.
-No real customer data or provider calls were used.
+Appistic v1.0.9 recovery local runtime evidence
+Git SHA: b0b9856981ac1cd7c3bc5e1741a737eee81b772a
+Date: 2026-10-25 Asia/Dhaka
+
+Procedure: start `node .next/standalone/server.js` with synthetic local
+configuration and isolated PostgreSQL; request the public root and private
+analytics endpoint; stop the server.
+
+Observed: `/` returned 200; `/api/track?cardId=<synthetic UUID>` returned 401.
+No production host, customer data, or live payment provider was contacted.

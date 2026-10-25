@@ -1,9 +1,12 @@
-Appistic v1.0.9 security unit evidence
-Tested SHA: e1337ec0f1a4c44fe58b5e58adf0d815177e446e
-Run date: 2026-10-23 Asia/Dhaka
+Appistic v1.0.9 recovery unit/security evidence
+Git SHA: b0b9856981ac1cd7c3bc5e1741a737eee81b772a
+Date: 2026-10-25 Asia/Dhaka
+
 Command: npm run test
-Environment: Node.js v22.18.0; synthetic test-only configuration
-Result: PASS; 9 tests passed, 0 failed, 0 skipped.
-Coverage includes bcrypt and legacy hash verification, centralized entitlements,
-safe URLs, same-origin mutation protection, Paddle HMAC expiry, CSV/vCard
-injection protection, and fail-closed production configuration checks.
+Exit: 0
+Result: 11 tests passed.
+
+Coverage includes bcrypt and legacy rehash behavior, one-card Free/ten-card Pro
+entitlements, bounded public lead payloads, private analytics headers, safe URLs,
+same-origin mutation checks, Paddle signature expiry, CSV/vCard output safety,
+and production configuration failure behavior.

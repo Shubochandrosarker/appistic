@@ -1,8 +1,16 @@
-Appistic v1.0.9 static verification evidence
-Tested SHA: e1337ec0f1a4c44fe58b5e58adf0d815177e446e
-Run date: 2026-10-23 Asia/Dhaka
-Commands: npm run check; npm audit --omit=dev --audit-level=high; npm run db:check
-Result: PASS.
-`npm run check` passed typecheck, ESLint with zero warnings, 9 security tests,
-and the Next.js 16.4.3 production build. `npm audit` reported 0 vulnerabilities.
-`npm run db:check` reported the Drizzle schema is consistent.
+Appistic v1.0.9 recovery build evidence
+Git SHA: b0b9856981ac1cd7c3bc5e1741a737eee81b772a
+Date: 2026-10-25 Asia/Dhaka
+
+Commands and exits:
+- npm ci --no-audit --no-fund — 0
+- npm run typecheck — 0
+- npm run lint — 0
+- npm run db:check — 0
+- npm run build — 0
+- git diff --check — 0
+
+The Dockerfile now copies the committed lockfile and runs npm ci without a
+fallback. The standalone Next runtime was started locally and separately
+smoke-tested. Full Docker image build remains blocked by the documented
+container npm network reset.

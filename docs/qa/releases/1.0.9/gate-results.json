@@ -1,26 +1,25 @@
 {
   "release": "1.0.9",
-  "git_sha": "e1337ec0f1a4c44fe58b5e58adf0d815177e446e",
+  "git_sha": "b0b9856981ac1cd7c3bc5e1741a737eee81b772a",
   "status": "BLOCKED",
   "gates": [
-    {"id":"G0","status":"BLOCKED","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/blocked-external.md"},
-    {"id":"G1","status":"BLOCKED","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/blocked-external.md"},
-    {"id":"G2","status":"BLOCKED","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/blocked-external.md"},
-    {"id":"G3","status":"BLOCKED","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/browser-smoke.txt"},
-    {"id":"G4","status":"BLOCKED","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/blocked-external.md"},
-    {"id":"G5","status":"PASS","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/build-audit.txt"},
-    {"id":"G6","status":"PASS","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/qr-semantics.txt"},
-    {"id":"G7","status":"BLOCKED","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/blocked-external.md"},
-    {"id":"G8","status":"BLOCKED","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/blocked-external.md"},
-    {"id":"G9","status":"BLOCKED","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/production-smoke.md"}
+    {"id":"G0","status":"PASS","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/baseline.md"},
+    {"id":"G1","status":"PASS","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/unit-security.txt"},
+    {"id":"G2","status":"PASS","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/db-integration.txt"},
+    {"id":"G3","status":"BLOCKED","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/browser-smoke.txt"},
+    {"id":"G4","status":"PASS","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/secret-audit.txt"},
+    {"id":"G5","status":"PASS","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/build-audit.txt"},
+    {"id":"G6","status":"BLOCKED","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/qr-semantics.txt"},
+    {"id":"G7","status":"BLOCKED","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/blocked-external.md"},
+    {"id":"G8","status":"BLOCKED","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/blocked-external.md"},
+    {"id":"G9","status":"BLOCKED","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/production-smoke.md"}
   ],
   "steps": [
-    {"id":"SEC-001","status":"PASS","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/unit-security.txt"},
-    {"id":"SEC-002","status":"PASS","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/build-audit.txt"},
-    {"id":"SEC-003","status":"PASS","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/authorization-legacy-webhook.txt"},
-    {"id":"BILL-001","status":"BLOCKED","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/blocked-external.md"},
-    {"id":"QR-001","status":"PASS","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/qr-semantics.txt"},
-    {"id":"API-001","status":"PASS","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/live-http.txt"},
-    {"id":"QA-001","status":"BLOCKED","sha":"e1337ec0f1a4c44fe58b5e58adf0d815177e446e","evidence_path":"docs/qa/releases/1.0.9/test-evidence/blocked-external.md"}
+    {"id":"SEC-001","status":"PASS","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/unit-security.txt"},
+    {"id":"SEC-002","status":"PASS","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/build-audit.txt"},
+    {"id":"SEC-003","status":"PASS","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/authorization-legacy-webhook.txt"},
+    {"id":"BILL-001","status":"PASS","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/authorization-legacy-webhook.txt"},
+    {"id":"LEAD-001","status":"PASS","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/db-integration.txt"},
+    {"id":"QA-001","status":"BLOCKED","sha":"b0b9856981ac1cd7c3bc5e1741a737eee81b772a","evidence_path":"docs/qa/releases/1.0.9/test-evidence/browser-smoke.txt"}
   ]
 }

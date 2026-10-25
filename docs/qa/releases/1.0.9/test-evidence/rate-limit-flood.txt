@@ -1,8 +1,7 @@
-Appistic v1.0.9 public lead rate-limit evidence
-Tested SHA: e1337ec0f1a4c44fe58b5e58adf0d815177e446e
-Run date: 2026-10-23 Asia/Dhaka
-Environment: local Next.js server and isolated PostgreSQL; synthetic published card.
-Procedure: submit 11 lead requests to one card from one synthetic client within
-the configured window.
-Result: statuses were 200 ten times, then 429 once. No provider or production
-traffic was used. Multi-instance distributed-load proof remains a G2/G7 item.
+Appistic v1.0.9 lead-cap evidence
+Git SHA: b0b9856981ac1cd7c3bc5e1741a737eee81b772a
+Date: 2026-10-25 Asia/Dhaka
+
+`npm run test:db` exit 0 verified account-wide 50-lead transactional locking
+and concurrent boundary behavior. The focused request-flood/browser procedure
+was not rerun on this SHA and is not claimed as current PASS evidence.

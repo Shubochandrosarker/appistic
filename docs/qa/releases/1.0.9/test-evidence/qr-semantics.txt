@@ -1,8 +1,8 @@
-Appistic v1.0.9 isolated printed-QR compatibility evidence
-Tested SHA: e1337ec0f1a4c44fe58b5e58adf0d815177e446e
-Run date: 2026-10-23 Asia/Dhaka
-Environment: local Next.js dev server, isolated synthetic cards, desktop browser.
-Result: PASS.
-Direct visit fixture stats: exactly 1 view and 0 qr_scan.
-QR visit fixture stats: exactly 1 view and 1 qr_scan after `/t/[slug]` redirect.
-Both pages rendered successfully with no browser console errors.
+Appistic v1.0.9 QR compatibility evidence
+Git SHA: b0b9856981ac1cd7c3bc5e1741a737eee81b772a
+Date: 2026-10-25 Asia/Dhaka
+
+No QR route or card slug logic was changed in this recovery. The prior
+e1337ec0 evidence was not reused as current-SHA proof. A fresh desktop/mobile
+browser check of direct card and QR routes remains BLOCKED pending the browser
+acceptance harness.
