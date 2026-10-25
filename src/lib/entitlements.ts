@@ -15,7 +15,7 @@ export function entitlementsForPlan(plan: string): Entitlements {
   if (plan === "pro") {
     return { plan: "pro", cards: 10, leadCapPerMonth: null, exportCsv: true, removeBranding: true, grandfathered: true };
   }
-  return { plan: "free", cards: 2, leadCapPerMonth: 50, exportCsv: false, removeBranding: false, grandfathered: false };
+  return { plan: "free", cards: 1, leadCapPerMonth: 50, exportCsv: false, removeBranding: false, grandfathered: false };
 }
 
 export async function getEntitlements(userId: string) {

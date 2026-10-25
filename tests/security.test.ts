@@ -6,11 +6,12 @@ process.env.PUBLIC_BASE_URL = "https://appistic.example.com";
 import { hashPassword, isBcryptHash, verifyPassword } from "../src/lib/password";
 import { entitlementsForPlan } from "../src/lib/entitlements";
 import { isSafePublicUrl, isSameOriginRequest, canonicalPublicBaseUrl } from "../src/lib/request-security";
-import { parseCardPatch } from "../src/lib/validation";
+import { parseCardPatch, parseLeadPayload } from "../src/lib/validation";
 import { verifyPaddleSignature } from "../src/lib/paddle-signature";
 import { escapeCsvCell } from "../src/lib/csv";
 import { escapeVCard } from "../src/lib/vcard";
 import { assertProductionConfig, missingProductionConfig } from "../src/lib/config";
+import { PRIVATE_ANALYTICS_HEADERS } from "../src/app/api/track/route";
 import crypto from "node:crypto";
 
 test("new passwords use bcrypt and verify", async () => {
@@ -26,12 +27,25 @@ test("legacy password hash verifies and requests migration", async () => {
   assert.deepEqual(result, { valid: true, needsRehash: true });
 });
 
-test("entitlements are centralized and Free has two cards", () => {
+test("v1.0.9 entitlements keep Free at one card and Pro at ten", () => {
   assert.deepEqual(entitlementsForPlan("free"), {
-    plan: "free", cards: 2, leadCapPerMonth: 50, exportCsv: false, removeBranding: false, grandfathered: false,
+    plan: "free", cards: 1, leadCapPerMonth: 50, exportCsv: false, removeBranding: false, grandfathered: false,
   });
+  assert.equal(entitlementsForPlan("pro").cards, 10);
   assert.equal(entitlementsForPlan("pro").leadCapPerMonth, null);
   assert.equal(entitlementsForPlan("unknown").plan, "free");
+});
+
+test("public lead payload requires a valid contact and bounded fields", () => {
+  assert.equal(parseLeadPayload({ slug: "published-card", name: "Ada", email: "ada@example.test" }).success, true);
+  assert.equal(parseLeadPayload({ slug: "published-card", name: "Ada", email: "not-an-email" }).success, false);
+  assert.equal(parseLeadPayload({ slug: "published-card", name: "Ada" }).success, false);
+  assert.equal(parseLeadPayload({ slug: "published-card", note: "x".repeat(501), phone: "123" }).success, false);
+});
+
+test("owner analytics responses are explicitly private and uncached", () => {
+  assert.equal(PRIVATE_ANALYTICS_HEADERS["Cache-Control"], "private, no-store");
+  assert.equal(PRIVATE_ANALYTICS_HEADERS.Vary, "Cookie");
 });
 
 test("unsafe URLs are rejected and canonical base is configured", () => {

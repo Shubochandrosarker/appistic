@@ -7,6 +7,7 @@ import { currentUserId } from "@/lib/auth";
 import { consumeRateLimit, requestRateKey } from "@/lib/rate-limit";
 
 const TYPES = new Set(["view", "qr_scan", "link_click", "vcard_save", "product_click"]);
+export const PRIVATE_ANALYTICS_HEADERS = { "Cache-Control": "private, no-store", Vary: "Cookie" } as const;
 
 /** Public, fire-and-forget analytics. No PII. */
 export async function POST(req: Request) {
@@ -25,12 +26,13 @@ export async function POST(req: Request) {
 
 /** Owner stats for a card. */
 export async function GET(req: Request) {
+  const privateHeaders = PRIVATE_ANALYTICS_HEADERS;
   const uid = await currentUserId();
-  if (!uid) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!uid) return NextResponse.json({ error: "unauthorized" }, { status: 401, headers: privateHeaders });
   const cardId = new URL(req.url).searchParams.get("cardId") || "";
-  if (!/^[0-9a-f-]{36}$/i.test(cardId)) return NextResponse.json({ error: "bad id" }, { status: 400 });
+  if (!/^[0-9a-f-]{36}$/i.test(cardId)) return NextResponse.json({ error: "bad id" }, { status: 400, headers: privateHeaders });
   const [owned] = await db.select({ id: cards.id }).from(cards).where(and(eq(cards.id, cardId), eq(cards.userId, uid))).limit(1);
-  if (!owned) return NextResponse.json({ error: "not found" }, { status: 404 });
+  if (!owned) return NextResponse.json({ error: "not found" }, { status: 404, headers: privateHeaders });
   const counts = await db
     .select({ type: events.type, n: sql<number>`count(*)` })
     .from(events)
@@ -60,5 +62,5 @@ export async function GET(req: Request) {
     },
     leads: recentLeads,
     nonce: crypto.randomUUID(),
-  });
+  }, { headers: privateHeaders });
 }

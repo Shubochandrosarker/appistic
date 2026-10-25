@@ -19,7 +19,7 @@ A **WordPressistic LLC** product. Live at https://appistic.com
 
 | | Free | Pro ($5/mo · $49/yr) |
 |---|---|---|
-| Cards | 2 | 10 |
+| Cards | 1 | 10 |
 | QR scans | Unlimited | Unlimited |
 | Leads | 50/month | Unlimited |
 | CSV export | — | ✓ |
@@ -32,13 +32,15 @@ Next.js 16 (App Router) · Postgres + Drizzle · Tailwind v4 · Paddle Billing �
 ## Dev
 
 ```bash
-npm install
+npm ci
 npm run db:migrate           # apply checked-in migrations
 npm run dev                  # http://localhost:3300
 ```
 
 Set `DATABASE_URL`, a random `AUTH_SECRET` of at least 32 characters, and
-`PUBLIC_BASE_URL` in `.env.local`. `npm run db:push` is retained for disposable
+`PUBLIC_BASE_URL` in `.env.local`. Configure Paddle with `PADDLE_ENVIRONMENT`,
+`PADDLE_PRO_PRODUCT_ID`, both `PADDLE_PRO_*_PRICE_ID` values, and the server-only
+API/webhook secrets. `npm run db:push` is retained for disposable
 local experiments only; use `npm run db:migrate` for shared, staging, and
 production databases.
 
@@ -56,6 +58,7 @@ npm audit --omit=dev --audit-level=high
 ## Deploy
 
 Docker standalone image; see `Dockerfile`. App expects `DATABASE_URL`,
-`AUTH_SECRET`, `PUBLIC_BASE_URL`, and the two `PADDLE_PRO_*_PRICE_ID` vars at
-runtime. Paddle upgrades remain fail-closed until a verified provider sandbox
+`AUTH_SECRET`, `PUBLIC_BASE_URL`, `PADDLE_ENVIRONMENT`,
+`PADDLE_PRO_PRODUCT_ID`, and the two `PADDLE_PRO_*_PRICE_ID` vars at runtime.
+Paddle upgrades remain fail-closed until a verified provider sandbox
 configuration and webhook evidence are available.

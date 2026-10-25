@@ -12,6 +12,7 @@ export const users = pgTable("users", {
   plan: text("plan").notNull().default("free"), // free | pro
   paddleCustomerId: text("paddle_customer_id"),
   paddleSubscriptionId: text("paddle_subscription_id"),
+  paddleEnvironment: text("paddle_environment"),
   paddleEventAt: timestamp("paddle_event_at", { withTimezone: true }),
   proSince: timestamp("pro_since", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -68,6 +69,24 @@ export const paddleWebhookEvents = pgTable(
   (t) => [index("paddle_events_type_idx").on(t.eventType)]
 );
 
+export const paddleCheckoutAttempts = pgTable(
+  "paddle_checkout_attempts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    transactionId: text("transaction_id").notNull().unique(),
+    priceId: text("price_id").notNull(),
+    environment: text("environment").notNull(),
+    customerId: text("customer_id"),
+    subscriptionId: text("subscription_id"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("paddle_attempts_user_idx").on(t.userId), index("paddle_attempts_subscription_idx").on(t.subscriptionId)]
+);
+
 export const rateLimitBuckets = pgTable("rate_limit_buckets", {
   key: text("key").primaryKey(),
   windowStartedAt: timestamp("window_started_at", { withTimezone: true }).notNull(),
@@ -115,7 +134,7 @@ export const events = pgTable(
     cardId: uuid("card_id")
       .notNull()
       .references(() => cards.id, { onDelete: "cascade" }),
-    type: text("type").notNull(), // view | qr_scan | link_click | vcard_save | product_click
+    type: text("type").notNull(), // view | qr_scan | link_click | vcard_save | product_click | lead
     ref: text("ref").notNull().default(""), // link label / product title / utm
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },

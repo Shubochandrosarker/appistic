@@ -53,6 +53,22 @@ export const loginSchema = z.object({
   password: z.string().min(1).max(200),
 });
 
+export const leadPayloadSchema = z.object({
+  slug: z.string().trim().min(1).max(80).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/i, "Invalid card."),
+  name: z.string().trim().max(80).default(""),
+  email: z.string().trim().max(120).refine((value) => !value || z.string().email().safeParse(value).success, "Invalid email.").default(""),
+  phone: z.string().trim().max(40).default(""),
+  note: z.string().trim().max(500).default(""),
+}).superRefine((value, ctx) => {
+  if (!value.email && !value.phone) {
+    ctx.addIssue({ code: "custom", path: ["email"], message: "Email or phone required." });
+  }
+});
+
 export function parseCardPatch(value: unknown) {
   return cardPatchSchema.partial().safeParse(value);
+}
+
+export function parseLeadPayload(value: unknown) {
+  return leadPayloadSchema.safeParse(value);
 }
