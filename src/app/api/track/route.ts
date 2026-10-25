@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import { cards, events, leads } from "@/lib/schema";
 import { and, eq, sql } from "drizzle-orm";
 import crypto from "node:crypto";
+import { currentUserId } from "@/lib/auth";
+import { consumeRateLimit, requestRateKey } from "@/lib/rate-limit";
 
 const TYPES = new Set(["view", "qr_scan", "link_click", "vcard_save", "product_click"]);
 
@@ -14,16 +16,21 @@ export async function POST(req: Request) {
   if (!/^[0-9a-f-]{36}$/i.test(cardId) || !TYPES.has(type)) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
-  const [own] = await db.select({ id: cards.id }).from(cards).where(eq(cards.id, cardId)).limit(1);
+  if (!(await consumeRateLimit(requestRateKey(req, "track", cardId), 120, 60))) return NextResponse.json({ ok: false }, { status: 429 });
+  const [own] = await db.select({ id: cards.id, orgId: cards.orgId }).from(cards).where(and(eq(cards.id, cardId), eq(cards.published, true))).limit(1);
   if (!own) return NextResponse.json({ ok: false }, { status: 404 });
-  await db.insert(events).values({ cardId, type, ref: String(b?.ref || "").slice(0, 120) });
+  await db.insert(events).values({ orgId: own.orgId, cardId, type, ref: String(b?.ref || "").slice(0, 120) });
   return NextResponse.json({ ok: true });
 }
 
 /** Owner stats for a card. */
 export async function GET(req: Request) {
+  const uid = await currentUserId();
+  if (!uid) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const cardId = new URL(req.url).searchParams.get("cardId") || "";
   if (!/^[0-9a-f-]{36}$/i.test(cardId)) return NextResponse.json({ error: "bad id" }, { status: 400 });
+  const [owned] = await db.select({ id: cards.id }).from(cards).where(and(eq(cards.id, cardId), eq(cards.userId, uid))).limit(1);
+  if (!owned) return NextResponse.json({ error: "not found" }, { status: 404 });
   const counts = await db
     .select({ type: events.type, n: sql<number>`count(*)` })
     .from(events)

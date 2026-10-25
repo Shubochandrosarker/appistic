@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 export type CardData = {
   id: string;
@@ -68,8 +69,7 @@ export default function CardClient({ card }: { card: CardData }) {
   useEffect(() => {
     if (tracked.current) return;
     tracked.current = true;
-    const seen = sessionStorage.getItem(`ap_v_${card.id}`);
-    track(card.id, seen ? "view" : "qr_scan");
+    track(card.id, "view");
     sessionStorage.setItem(`ap_v_${card.id}`, "1");
   }, [card.id]);
 
@@ -221,7 +221,7 @@ export default function CardClient({ card }: { card: CardData }) {
         </div>
 
         <p className="mt-8 text-center text-[11px]" style={{ color: p.mut }}>
-          Made with <a href="/" className="font-bold underline" style={{ color: accent }}>Appistic</a> — digital business cards
+          Made with <Link href="/" className="font-bold underline" style={{ color: accent }}>Appistic</Link> — digital business cards
         </p>
       </div>
     </main>

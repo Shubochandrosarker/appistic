@@ -1,12 +1,10 @@
 import { db } from "@/lib/db";
 import { cards } from "@/lib/schema";
 import { eq } from "drizzle-orm";
+import { canonicalPublicBaseUrl, isSafePublicUrl } from "@/lib/request-security";
+import { escapeVCard } from "@/lib/vcard";
 
 export const dynamic = "force-dynamic";
-
-function esc(s: string) {
-  return s.replace(/([,;\\])/g, "\\$1").replace(/\n/g, "\\n");
-}
 
 export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params;
@@ -15,15 +13,15 @@ export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }
   const lines = [
     "BEGIN:VCARD",
     "VERSION:3.0",
-    `FN:${esc(c.brandName)}`,
-    `ORG:${esc(c.brandName)}`,
-    c.headline ? `TITLE:${esc(c.headline)}` : "",
-    c.phone ? `TEL;TYPE=WORK,VOICE:${esc(c.phone)}` : "",
-    c.email ? `EMAIL;TYPE=WORK:${esc(c.email)}` : "",
-    c.website ? `URL:${esc(c.website)}` : "",
-    c.address ? `ADR;TYPE=WORK:;;${esc(c.address)};;;;` : "",
-    c.bio ? `NOTE:${esc(c.bio.slice(0, 200))}` : "",
-    `URL;TYPE=card:https://appistic.com/c/${c.slug}`,
+    `FN:${escapeVCard(c.brandName)}`,
+    `ORG:${escapeVCard(c.brandName)}`,
+    c.headline ? `TITLE:${escapeVCard(c.headline)}` : "",
+    c.phone ? `TEL;TYPE=WORK,VOICE:${escapeVCard(c.phone)}` : "",
+    c.email ? `EMAIL;TYPE=WORK:${escapeVCard(c.email)}` : "",
+    c.website && isSafePublicUrl(c.website) ? `URL:${escapeVCard(c.website)}` : "",
+    c.address ? `ADR;TYPE=WORK:;;${escapeVCard(c.address)};;;;` : "",
+    c.bio ? `NOTE:${escapeVCard(c.bio.slice(0, 200))}` : "",
+    `URL;TYPE=card:${canonicalPublicBaseUrl()}/c/${c.slug}`,
     "END:VCARD",
   ].filter(Boolean);
   return new Response(lines.join("\r\n"), {

@@ -4,6 +4,8 @@ import { users } from "@/lib/schema";
 import { currentUserId } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { PRICING } from "@/lib/plan";
+import { isSameOriginRequest } from "@/lib/request-security";
+import { getEntitlements } from "@/lib/entitlements";
 
 export const dynamic = "force-dynamic";
 
@@ -15,9 +17,11 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const uid = await currentUserId();
   if (!uid) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (!isSameOriginRequest(req)) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const [user] = await db.select().from(users).where(eq(users.id, uid)).limit(1);
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  if (user.plan === "pro") return NextResponse.json({ error: "Already on Pro." }, { status: 400 });
+  const entitlements = await getEntitlements(uid);
+  if (entitlements.plan === "pro") return NextResponse.json({ error: "Already on Pro." }, { status: 400 });
 
   const key = process.env.PADDLE_API_KEY;
   const body = await req.json().catch(() => ({}));
