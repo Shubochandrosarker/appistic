@@ -15,9 +15,9 @@ FROM node:22-alpine AS run
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3300
 RUN addgroup -S app && adduser -S app -G app
-COPY --from=build /app/.next/standalone ./
-COPY --from=build /app/.next/static ./.next/static
-COPY --from=build /app/drizzle ./drizzle
+COPY --from=build --chown=app:app /app/.next/standalone ./
+COPY --from=build --chown=app:app /app/.next/static ./.next/static
+COPY --from=build --chown=app:app /app/drizzle ./drizzle
 USER app
 EXPOSE 3300
 CMD ["node", "server.js"]
