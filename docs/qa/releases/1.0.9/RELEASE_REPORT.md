@@ -2,7 +2,7 @@
 
 Release/step: 1.0.9 security and release recovery
 Git base -> tested SHA: `7536de3` -> `b0b9856981ac1cd7c3bc5e1741a737eee81b772a`
-Deployment SHA: `3d53b63b8e5956a04aabe7deca7eb1dbbbd68530`
+Deployment SHA: `13a526f5aad957a1a0f9a7dd6c332940d14a080a`
 Status: BLOCKED (deployed, but release gates remain blocked)
 
 ## Changes and affected files
@@ -14,6 +14,8 @@ Status: BLOCKED (deployed, but release gates remain blocked)
 - Owner analytics responses explicitly use `Cache-Control: private, no-store` and `Vary: Cookie`.
 - Docker requires the committed lockfile with `npm ci`; `.dockerignore` excludes host dependencies, build output, secrets, and generated metadata. `tsconfig.tsbuildinfo` is no longer tracked. Zod was updated to `4.6.7` to clear the high-severity audit finding.
 - Added migration `drizzle/0004_release_recovery.sql` and focused unit/database coverage.
+- Refreshed the public product experience across the homepage, pricing, authentication, dashboard, billing, and analytics surfaces with a cohesive premium design system, responsive layouts, accessible focus states, and reduced-motion support.
+- Public lead capture now requires an email or phone number and keeps the owner-branding footer conditional on the Pro plan.
 
 ## Evidence with exact commands and exit codes
 
@@ -34,8 +36,8 @@ Detailed evidence is in `test-evidence/` and `test-results.json`.
 
 ## Authorized Hostinger deployment
 
-The owner explicitly authorized deployment and a GitHub update on 2026-10-25.
-The pushed recovery branch is `codex/appistic-hardening` at `3d53b63`. GitHub's
+The owner explicitly authorized deployment and a GitHub update on 2026-10-26.
+The pushed recovery branch is `codex/appistic-hardening` at `13a526f`. GitHub's
 `Appistic CI` workflow was disabled manually before the push, so this update did
 not trigger GitHub Actions.
 
@@ -46,11 +48,16 @@ Hostinger deployment evidence:
 - The direct origin returned HTTP 200 for `/` and `/login`; unauthenticated
   analytics returned HTTP 401 with `Cache-Control: private, no-store` and
   `Vary: Cookie`.
-- The active container is `appistic:3d53b63` on the Hostinger VPS. The previous
-  `appistic:1.0.8` container is retained as
-  `appistic-1.0.8-rollback-20261025`.
+- The active container is `appistic:13a526f` on the Hostinger VPS. The previous
+  `appistic:3d53b63` container is retained as
+  `appistic-3d53b63-rollback-20261026`; the older `appistic:1.0.8` rollback is
+  also retained.
 - The existing database was backed up before deployment. The migration ledger
   contains `0000` through `0004`; the additive recovery migrations completed.
+- The saved local Paddle live API key was used read-only to validate the active
+  Pro product and monthly/yearly prices. Hostinger now has live environment,
+  product, monthly/yearly price, and active webhook-signing configuration; no
+  live payment was created during this deployment.
 - The deployed app log had no startup/runtime errors during the smoke window.
 
 This is deployment and availability evidence, not proof of Paddle payment,
@@ -60,13 +67,13 @@ webhook reconciliation, browser/mobile/a11y acceptance, or release unblocking.
 
 The P0 billing grant path, Free-limit inconsistency, unpublished-card lead write, lead/view event confusion, analytics cache exposure, Docker install fallback, and tracked generated cache are fixed in source and covered locally. Existing card data, published state, slugs, and QR target routes are not modified by the recovery.
 
-Official Paddle documentation confirms that `transaction.completed` describes a completed transaction, while subscription lifecycle events establish subscription state; Paddle requires event-id deduplication and `occurred_at` ordering. The implementation follows that boundary without making a live provider request.
+Official Paddle documentation confirms that `transaction.completed` describes a completed transaction, while subscription lifecycle events establish subscription state; Paddle requires event-id deduplication and `occurred_at` ordering. The implementation follows that boundary. A read-only live catalog request validated the configured product and prices; no payment or subscription mutation was created.
 
 ## Provider and environment limitations
 
 - GitHub Actions run `40203334605` on `main` failed before the job started because the GitHub account is locked due to a billing issue. It had no steps and no retrievable log archive. The CI gate is therefore BLOCKED, not PASS.
-- The first local Docker build reached the lockfile install but failed with `ECONNRESET`; the Hostinger build for `3d53b63` completed successfully. The Dockerfile no longer has an install fallback.
-- Official Paddle sandbox, staging, full owner release approval, and a real provider reconciliation remain unavailable. A limited production availability smoke was executed after the explicitly authorized deployment.
+- The first local Docker build reached the lockfile install but failed with `ECONNRESET`; the Hostinger build for `13a526f` completed successfully. The Dockerfile no longer has an install fallback.
+- Official Paddle sandbox, staging, full owner release approval, and a real provider reconciliation remain unavailable. Live catalog/configuration was validated, but no payment was created; a limited production availability smoke was executed after the explicitly authorized deployment.
 - Desktop/mobile browser E2E and keyboard-a11y automation are not configured in this checkout. Local HTTP/standalone smoke is not browser E2E evidence.
 
 ## Open failures
