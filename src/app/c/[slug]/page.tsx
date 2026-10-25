@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { cards } from "@/lib/schema";
+import { cards, users } from "@/lib/schema";
 import { and, eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import CardClient from "./CardClient";
@@ -24,10 +24,11 @@ export default async function PublicCard({ params }: { params: Promise<{ slug: s
   const { slug } = await params;
   const [card] = await db.select().from(cards).where(and(eq(cards.slug, slug), eq(cards.published, true))).limit(1);
   if (!card || !card.published) notFound();
+  const [owner] = await db.select({ plan: users.plan }).from(users).where(eq(users.id, card.userId)).limit(1);
   const safeCard = {
     ...card,
     links: card.links.filter((link) => isSafePublicUrl(link.url)),
     products: card.products.filter((product) => isSafePublicUrl(product.url) && isSafePublicUrl(product.image)),
   };
-  return <CardClient card={JSON.parse(JSON.stringify(safeCard))} />;
+  return <CardClient card={JSON.parse(JSON.stringify(safeCard))} showBranding={owner?.plan !== "pro"} />;
 }

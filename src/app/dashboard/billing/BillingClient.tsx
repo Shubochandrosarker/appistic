@@ -3,79 +3,18 @@
 import Link from "next/link";
 import { useState } from "react";
 
-export default function BillingClient({
-  email,
-  plan,
-  portalUrl,
-  pricing,
-}: {
-  email: string;
-  plan: string;
-  userId: string;
-  portalUrl: string;
-  pricing: { monthly: number; yearly: number };
-  monthlyPriceId: string;
-  yearlyPriceId: string;
-}) {
+export default function BillingClient({ email, plan, portalUrl, pricing }: { email: string; plan: string; userId: string; portalUrl: string; pricing: { monthly: number; yearly: number }; monthlyPriceId: string; yearlyPriceId: string }) {
   const [busy, setBusy] = useState("");
   const [err, setErr] = useState("");
 
   async function go(interval: "monthly" | "yearly") {
-    setBusy(interval);
-    setErr("");
+    setBusy(interval); setErr("");
     try {
-      const res = await fetch("/api/billing/checkout", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ interval }),
-      });
+      const res = await fetch("/api/billing/checkout", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ interval }) });
       const j = await res.json().catch(() => ({}));
-      if (j.url) window.location.href = j.url;
-      else {
-        setErr(j.error || "Checkout unavailable right now.");
-        setBusy("");
-      }
-    } catch {
-      setErr("Checkout unavailable right now.");
-      setBusy("");
-    }
+      if (j.url) window.location.href = j.url; else { setErr(j.error || "Checkout unavailable right now."); setBusy(""); }
+    } catch { setErr("Checkout unavailable right now."); setBusy(""); }
   }
 
-  return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
-      <Link href="/dashboard" className="text-sm a-mut hover:opacity-70">← Dashboard</Link>
-      <h1 className="mt-3 text-3xl font-extrabold">Billing</h1>
-      <p className="mt-1 a-mut">
-        {email} · Current plan: <b className="text-white">{plan === "pro" ? "Pro" : "Free"}</b>
-      </p>
-
-      {plan !== "pro" ? (
-        <div className="a-card mt-8 p-7" style={{ borderColor: "var(--acc)" }}>
-          <h2 className="text-lg font-bold">Upgrade to Pro</h2>
-          <p className="mt-1 text-sm a-mut">10 cards · unlimited leads · CSV export · no Appistic branding</p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <button onClick={() => go("monthly")} disabled={!!busy} className="a-btn py-3 text-sm">
-              {busy === "monthly" ? "…" : `$${pricing.monthly}/month`}
-            </button>
-            <button onClick={() => go("yearly")} disabled={!!busy} className="a-card py-3 text-sm font-semibold hover:border-[var(--acc)]">
-              {busy === "yearly" ? "…" : `$${pricing.yearly}/year (save 18%)`}
-            </button>
-          </div>
-          {err && <p className="mt-3 text-sm text-red-400">{err}</p>}
-          <p className="mt-4 text-xs a-mut">Secure checkout by Paddle · Cancel anytime</p>
-        </div>
-      ) : (
-        <div className="a-card mt-8 p-7">
-          <p className="text-sm font-semibold" style={{ color: "#22c55e" }}>✓ You are on Pro</p>
-          <p className="mt-1 text-sm a-mut">Manage payment method, invoices or cancel from the Paddle customer portal.</p>
-          <a href={portalUrl} target="_blank" rel="noreferrer" className="a-btn mt-4 inline-block px-5 py-2.5 text-sm">Open billing portal</a>
-        </div>
-      )}
-
-      <div className="mt-10 a-card p-6 text-xs a-mut">
-        Need help? <a className="underline" href="mailto:hello@wordpressistic.com">hello@wordpressistic.com</a>
-        {" · "}Appistic is a WordPressistic LLC product.
-      </div>
-    </main>
-  );
+  return <main className="a-shell min-h-screen"><header className="a-nav"><div className="a-container flex items-center justify-between py-4"><Link href="/" className="a-brand text-lg"><span className="a-brand-mark">A<span className="text-[var(--acc)]">.</span></span><span>App<span className="text-[var(--acc)]">istic</span></span></Link><Link href="/dashboard" className="a-ghost px-4 py-2 text-xs">← Dashboard</Link></div></header><div className="a-container max-w-5xl py-12 sm:py-16"><div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr] lg:items-start"><div><p className="a-eyebrow">Workspace plan</p><h1 className="mt-3 text-4xl font-black tracking-[-.06em]">Give your follow-up more room.</h1><p className="mt-5 text-sm leading-7 text-[var(--mut-strong)]">Upgrade when one card is no longer enough. Keep the same calm workflow across every business, offer, and campaign you share.</p><div className="mt-7 flex items-center gap-3 text-xs"><span className="a-pill">Current plan: {plan === "pro" ? "Pro" : "Free"}</span><span className="truncate text-[var(--mut)]">{email}</span></div></div><div className="a-card overflow-hidden border-[var(--acc)]"><div className="bg-[var(--txt)] p-7 text-white sm:p-9"><div className="flex items-start justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[.15em] text-[#f28d82]">Appistic Pro</p><h2 className="mt-3 text-3xl font-black tracking-[-.05em]">Your business, without the ceiling.</h2></div><span className="rounded-full bg-[#f28d82] px-3 py-1 text-[10px] font-black uppercase text-[var(--txt)]">Pro</span></div><div className="mt-8 grid gap-3 sm:grid-cols-2"><button onClick={() => go("monthly")} disabled={!!busy || plan === "pro"} className="rounded-xl bg-[#f28d82] px-4 py-3.5 text-sm font-black text-[var(--txt)] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">{busy === "monthly" ? "Opening checkout…" : `$${pricing.monthly}/month`}</button><button onClick={() => go("yearly")} disabled={!!busy || plan === "pro"} className="rounded-xl border border-white/20 px-4 py-3.5 text-sm font-black text-white transition hover:border-white disabled:cursor-not-allowed disabled:opacity-50">{busy === "yearly" ? "Opening checkout…" : `$${pricing.yearly}/year · save 18%`}</button></div>{err && <p role="alert" className="mt-4 rounded-lg bg-red-400/15 px-3 py-2 text-sm text-red-100">{err}</p>}<p className="mt-4 text-xs text-white/45">Secure checkout by Paddle · cancel anytime</p></div><div className="grid gap-4 p-7 sm:grid-cols-2 sm:p-9">{["10 business cards", "Unlimited lead capture", "Leads CSV export", "Remove Appistic branding"].map((item) => <div key={item} className="flex gap-3 text-sm"><span className="font-black text-[var(--acc)]">✓</span><span className="font-bold text-[var(--mut-strong)]">{item}</span></div>)}</div></div></div>{plan === "pro" && <div className="a-card mt-8 flex flex-wrap items-center justify-between gap-4 border-[#9bd3bd] bg-[#effaf5] p-5"><div><p className="font-black text-[var(--success)]">You&apos;re on Pro.</p><p className="mt-1 text-sm text-[var(--mut-strong)]">Manage payment method, invoices, or cancellation from your Paddle portal.</p></div><a href={portalUrl} target="_blank" rel="noreferrer" className="a-ghost px-4 py-2.5 text-xs">Open billing portal ↗</a></div>}<p className="mt-10 text-center text-xs text-[var(--mut)]">Need help? <a className="font-bold text-[var(--acc)] underline" href="mailto:hello@wordpressistic.com">hello@wordpressistic.com</a></p></div></main>;
 }

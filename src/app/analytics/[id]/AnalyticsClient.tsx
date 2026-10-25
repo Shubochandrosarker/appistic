@@ -5,81 +5,9 @@ import { useState } from "react";
 
 type Lead = { id: string; name: string; email: string; phone: string; note: string; createdAt: string };
 
-export default function AnalyticsClient({
-  card,
-  plan,
-  stats,
-  leads,
-}: {
-  card: { id: string; slug: string; brandName: string };
-  plan: string;
-  stats: { views: number; qrScans: number; linkClicks: number; productClicks: number; saves: number; leadsTotal: number; leadsThisMonth: number };
-  leads: Lead[];
-}) {
+export default function AnalyticsClient({ card, plan, stats, leads }: { card: { id: string; slug: string; brandName: string }; plan: string; stats: { views: number; qrScans: number; linkClicks: number; productClicks: number; saves: number; leadsTotal: number; leadsThisMonth: number }; leads: Lead[] }) {
   const [err, setErr] = useState("");
-  async function exportCsv() {
-    const res = await fetch(`/api/leads/export?cardId=${card.id}`);
-    if (!res.ok) {
-      setErr("Export failed.");
-      return;
-    }
-    const blob = await res.blob();
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `${card.slug}-leads.csv`;
-    a.click();
-  }
-  const tiles = [
-    ["👁️", "Page views", stats.views],
-    ["📱", "QR scans", stats.qrScans],
-    ["🔗", "Link clicks", stats.linkClicks],
-    ["🛍️", "Product clicks", stats.productClicks],
-    ["📇", "Contact saves", stats.saves],
-    ["📥", `Leads (${stats.leadsThisMonth} this month)`, stats.leadsTotal],
-  ] as const;
-
-  return (
-    <main className="mx-auto max-w-4xl px-6 py-10">
-      <Link href="/dashboard" className="text-sm a-mut hover:opacity-70">← Dashboard</Link>
-      <header className="mt-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">{card.brandName} — Analytics</h1>
-        {plan === "pro" ? (
-          <button onClick={exportCsv} className="a-btn px-5 py-2.5 text-sm">Export leads CSV</button>
-        ) : (
-          <Link href="/dashboard/billing" className="a-card px-5 py-2.5 text-sm hover:border-[var(--acc)]">CSV export — Pro</Link>
-        )}
-      </header>
-      {err && <p className="mt-2 text-sm text-red-400">{err}</p>}
-
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {tiles.map(([icon, label, n]) => (
-          <div key={label} className="a-card p-4">
-            <p className="text-xl">{icon}</p>
-            <p className="mt-1 text-2xl font-extrabold">{n}</p>
-            <p className="text-xs a-mut">{label}</p>
-          </div>
-        ))}
-      </div>
-
-      <h2 className="mt-10 text-lg font-bold">Leads ({leads.length})</h2>
-      {leads.length === 0 ? (
-        <div className="a-card mt-4 p-8 text-center text-sm a-mut">
-          No leads yet. Share your QR — leads land here automatically.
-        </div>
-      ) : (
-        <div className="a-card mt-4 divide-y divide-[var(--line)]">
-          {leads.map((l) => (
-            <div key={l.id} className="flex flex-wrap items-baseline justify-between gap-2 px-5 py-3.5 text-sm">
-              <div className="min-w-0">
-                <p className="font-semibold">{l.name || "—"}</p>
-                <p className="a-mut">{[l.email, l.phone].filter(Boolean).join(" · ")}</p>
-                {l.note && <p className="mt-1 text-xs a-mut">“{l.note}”</p>}
-              </div>
-              <span className="text-xs a-mut">{new Date(l.createdAt).toLocaleDateString()}</span>
-            </div>
-          ))}
-        </div>
-      )}
-    </main>
-  );
+  async function exportCsv() { const res = await fetch(`/api/leads/export?cardId=${card.id}`); if (!res.ok) { setErr("Export failed."); return; } const blob = await res.blob(); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${card.slug}-leads.csv`; a.click(); URL.revokeObjectURL(a.href); }
+  const tiles = [["Views", stats.views, "People who opened your card"], ["QR scans", stats.qrScans, "Scans from your printed QR"], ["Link clicks", stats.linkClicks, "Actions on your links"], ["Product interest", stats.productClicks, "Clicks on product offers"], ["Contact saves", stats.saves, "vCards saved"], ["Leads", stats.leadsTotal, `${stats.leadsThisMonth} this month`]] as const;
+  return <main className="a-shell min-h-screen"><header className="a-nav"><div className="a-container flex items-center justify-between py-4"><Link href="/" className="a-brand text-lg"><span className="a-brand-mark">A<span className="text-[var(--acc)]">.</span></span><span>App<span className="text-[var(--acc)]">istic</span></span></Link><Link href="/dashboard" className="a-ghost px-4 py-2 text-xs">← Dashboard</Link></div></header><div className="a-container max-w-5xl py-12 sm:py-16"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="a-eyebrow">Card insights</p><h1 className="mt-2 text-3xl font-black tracking-[-.055em] sm:text-4xl">{card.brandName}</h1><p className="mt-2 text-sm text-[var(--mut)]">A clearer view of what happens after the scan.</p></div>{plan === "pro" ? <button onClick={exportCsv} className="a-btn px-4 py-2.5 text-xs">Export leads CSV <span aria-hidden>↓</span></button> : <Link href="/dashboard/billing" className="a-ghost px-4 py-2.5 text-xs">CSV export · Pro ↗</Link>}</div>{err && <p role="alert" className="mt-4 text-sm text-red-700">{err}</p>}<div className="mt-9 grid grid-cols-2 gap-3 md:grid-cols-3">{tiles.map(([label, value, hint]) => <div key={label} className="a-stat"><p className="text-3xl font-black tracking-[-.06em]">{value}</p><p className="mt-2 text-sm font-black">{label}</p><p className="mt-1 text-[11px] leading-4 text-[var(--mut)]">{hint}</p></div>)}</div><div className="mt-12 flex items-end justify-between gap-4"><div><p className="a-eyebrow">Lead inbox</p><h2 className="mt-2 text-2xl font-black tracking-[-.04em]">People ready for a reply.</h2></div><span className="text-xs font-bold text-[var(--mut)]">{leads.length} shown</span></div>{leads.length === 0 ? <div className="a-card mt-5 p-10 text-center"><div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--acc-soft)] font-black text-[var(--acc)]">↗</div><p className="mt-4 font-black">No leads yet.</p><p className="mt-2 text-sm text-[var(--mut)]">Share your QR and the next interested visitor can land here.</p></div> : <div className="a-card mt-5 divide-y divide-[var(--line)]">{leads.map((l) => <div key={l.id} className="flex flex-wrap items-start justify-between gap-4 p-5"><div className="min-w-0"><p className="font-black">{l.name || "Unnamed contact"}</p><p className="mt-1 text-sm text-[var(--mut-strong)]">{[l.email, l.phone].filter(Boolean).join(" · ") || "No contact detail"}</p>{l.note && <p className="mt-3 max-w-xl rounded-lg bg-[var(--bg)] px-3 py-2 text-xs leading-5 text-[var(--mut-strong)]">“{l.note}”</p>}</div><span className="text-xs text-[var(--mut)]">{new Date(l.createdAt).toLocaleDateString()}</span></div>)}</div>}</div></main>;
 }

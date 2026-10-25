@@ -5,7 +5,10 @@ import "./globals.css";
 const nunito = Nunito_Sans({ subsets: ["latin"], weight: ["400", "600", "700", "800", "900"] });
 
 export const metadata: Metadata = {
-  title: "Appistic — Digital Business Card with Dynamic QR",
+  title: {
+    default: "Appistic — Your next introduction, ready to share",
+    template: "%s · Appistic",
+  },
   description:
     "Build your digital business card in minutes. Dynamic QR code that never goes out of date. Share your business, products and socials. Capture leads from every scan.",
   metadataBase: new URL(process.env.PUBLIC_BASE_URL || "https://appistic.com"),
@@ -18,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#f7f7f4",
   width: "device-width",
   initialScale: 1,
 };

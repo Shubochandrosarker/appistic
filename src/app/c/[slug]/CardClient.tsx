@@ -55,7 +55,7 @@ const ICONS: Record<string, string> = {
   shop: "🛍️", map: "📍", telegram: "✈️",
 };
 
-export default function CardClient({ card }: { card: CardData }) {
+export default function CardClient({ card, showBranding = true }: { card: CardData; showBranding?: boolean }) {
   const accent = card.theme?.accent || "#ea3a2e";
   const p = PRESETS[card.theme?.preset] || PRESETS.snow;
   const soft = p.dark ? "#ffffff14" : "rgba(23,25,35,0.04)";
@@ -76,11 +76,18 @@ export default function CardClient({ card }: { card: CardData }) {
   async function submitLead(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
+    const email = String(fd.get("email") || "").trim();
+    const phone = String(fd.get("phone") || "").trim();
+    if (!email && !phone) {
+      setLeadMsg("Add an email or phone number so the owner can reply.");
+      setLeadState("error");
+      return;
+    }
     setLeadState("sending");
     const r = await fetch("/api/leads", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ slug: card.slug, name: fd.get("name"), email: fd.get("email"), phone: fd.get("phone"), note: fd.get("note") }),
+      body: JSON.stringify({ slug: card.slug, name: fd.get("name"), email, phone, note: fd.get("note") }),
     });
     if (r.ok) {
       setLeadState("done");
@@ -202,6 +209,7 @@ export default function CardClient({ card }: { card: CardData }) {
               ) : leadOpen ? (
                 <form onSubmit={submitLead} className="space-y-2.5 p-5" style={{ background: chipBg, border: `1px solid ${chipBorder}`, borderRadius: 20 }}>
                   <p className="text-sm font-bold" style={{ color: p.text }}>Get in touch</p>
+                  <p className="text-xs" style={{ color: p.mut }}>Add an email or phone number so {card.brandName} can reply.</p>
                   <input name="name" placeholder="Your name" required className="w-full px-3 py-2.5 text-sm" style={{ background: p.dark ? "#00000040" : "#fbfbfd", border: `1.5px solid ${chipBorder}`, borderRadius: 12, outline: "none", color: p.text }} />
                   <input name="email" type="email" placeholder="Email" className="w-full px-3 py-2.5 text-sm" style={{ background: p.dark ? "#00000040" : "#fbfbfd", border: `1.5px solid ${chipBorder}`, borderRadius: 12, outline: "none", color: p.text }} />
                   <input name="phone" placeholder="Phone (optional)" className="w-full px-3 py-2.5 text-sm" style={{ background: p.dark ? "#00000040" : "#fbfbfd", border: `1.5px solid ${chipBorder}`, borderRadius: 12, outline: "none", color: p.text }} />
@@ -220,9 +228,9 @@ export default function CardClient({ card }: { card: CardData }) {
           )}
         </div>
 
-        <p className="mt-8 text-center text-[11px]" style={{ color: p.mut }}>
+        {showBranding && <p className="mt-8 text-center text-[11px]" style={{ color: p.mut }}>
           Made with <Link href="/" className="font-bold underline" style={{ color: accent }}>Appistic</Link> — digital business cards
-        </p>
+        </p>}
       </div>
     </main>
   );
