@@ -1,0 +1,9 @@
+Appistic v1.0.9 browser smoke evidence
+Tested SHA: e1337ec0f1a4c44fe58b5e58adf0d815177e446e
+Run date: 2026-10-23 Asia/Dhaka
+Environment: Codex in-app browser, local synthetic pages.
+Result: PASS for the executed desktop smoke scope.
+The QR entry route redirected to the published card page, the expected card
+heading and contact UI rendered, and browser console error logs were empty.
+Representative mobile viewport and formal accessibility audit were not run;
+G3 therefore remains BLOCKED in the release report.

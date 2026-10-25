@@ -5,6 +5,7 @@ import { currentUserId } from "@/lib/auth";
 import { eq, sql, and, gte } from "drizzle-orm";
 import { users } from "@/lib/schema";
 import AnalyticsClient from "./AnalyticsClient";
+import { getPersonalOrganization } from "@/lib/organization";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Analytics — Appistic" };
@@ -14,24 +15,26 @@ export default async function Analytics({ params }: { params: Promise<{ id: stri
   if (!uid) redirect("/login");
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
-  const [card] = await db.select().from(cards).where(and(eq(cards.id, id), eq(cards.userId, uid))).limit(1);
+  const org = await getPersonalOrganization(uid);
+  if (!org) notFound();
+  const [card] = await db.select().from(cards).where(and(eq(cards.id, id), eq(cards.userId, uid), eq(cards.orgId, org.id))).limit(1);
   if (!card) notFound();
   const [user] = await db.select({ plan: users.plan }).from(users).where(eq(users.id, uid)).limit(1);
 
   const counts = await db
     .select({ type: events.type, n: sql<number>`count(*)` })
     .from(events)
-    .where(eq(events.cardId, card.id))
+    .where(and(eq(events.cardId, card.id), eq(events.orgId, org.id)))
     .groupBy(events.type);
   const byType: Record<string, number> = {};
   for (const c of counts) byType[c.type] = Number(c.n);
 
-  const leadsTotal = await db.select({ n: sql<number>`count(*)` }).from(leads).where(eq(leads.cardId, card.id));
+  const leadsTotal = await db.select({ n: sql<number>`count(*)` }).from(leads).where(and(eq(leads.cardId, card.id), eq(leads.orgId, org.id)));
   const leadsMonth = await db
     .select({ n: sql<number>`count(*)` })
     .from(leads)
-    .where(and(eq(leads.cardId, card.id), gte(leads.createdAt, sql`date_trunc('month', now())`)));
-  const leadRows = await db.select().from(leads).where(eq(leads.cardId, card.id)).orderBy(sql`${leads.createdAt} desc`).limit(200);
+    .where(and(eq(leads.cardId, card.id), eq(leads.orgId, org.id), gte(leads.createdAt, sql`date_trunc('month', now())`)));
+  const leadRows = await db.select().from(leads).where(and(eq(leads.cardId, card.id), eq(leads.orgId, org.id))).orderBy(sql`${leads.createdAt} desc`).limit(200);
 
   return (
     <AnalyticsClient

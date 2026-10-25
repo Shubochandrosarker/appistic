@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { cards } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import QRCode from "qrcode";
+import { canonicalPublicBaseUrl } from "@/lib/request-security";
 
 export const dynamic = "force-dynamic";
 
@@ -10,9 +11,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ slug: string }>
   const { slug } = await ctx.params;
   const [c] = await db.select({ published: cards.published }).from(cards).where(eq(cards.slug, slug)).limit(1);
   if (!c || !c.published) return new Response("Not found", { status: 404 });
-  const url = new URL(req.url);
-  const base = process.env.PUBLIC_BASE_URL || "https://appistic.com";
-  const target = `${url.protocol}//${url.host}/t/${slug}`;
+  const target = `${canonicalPublicBaseUrl()}/t/${slug}`;
   const buf = await QRCode.toBuffer(target, {
     type: "png",
     width: 1024,

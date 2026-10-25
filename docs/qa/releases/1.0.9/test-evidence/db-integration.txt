@@ -1,0 +1,13 @@
+Appistic v1.0.9 isolated database evidence
+Tested SHA: e1337ec0f1a4c44fe58b5e58adf0d815177e446e
+Run date: 2026-10-23 Asia/Dhaka
+Commands: npm run db:migrate; npm run test:db
+Environment: isolated PostgreSQL 16 Docker container on 127.0.0.1:55433;
+credentials redacted; synthetic data only.
+Result: PASS; migration replay and the integration test passed with 0 failures
+and 0 skipped tests.
+Verified behavior includes legacy-record backfill, personal organizations and
+membership creation, session revocation, transactional card-cap locking,
+transactional 50-lead monthly-cap locking, unsigned/wrong-price webhook
+rejection, duplicate/out-of-order webhook protection, and rate-limit bucket
+persistence.

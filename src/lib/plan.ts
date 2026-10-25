@@ -13,6 +13,6 @@ export const PRICING = {
   proMonthlyUsd: 5,
   proYearlyUsd: 49,
   checkoutBase: process.env.PADDLE_CHECKOUT_URL || "https://pay.wpistic.com",
-  proMonthlyPriceId: process.env.PADDLE_PRO_MONTHLY_PRICE_ID || "pri_01m48t39c75azwhsbp41dcky2g",
-  proYearlyPriceId: process.env.PADDLE_PRO_YEARLY_PRICE_ID || "pri_01m48t39mhfscbzws0aenn3bxx",
+  proMonthlyPriceId: process.env.PADDLE_PRO_MONTHLY_PRICE_ID || "",
+  proYearlyPriceId: process.env.PADDLE_PRO_YEARLY_PRICE_ID || "",
 };

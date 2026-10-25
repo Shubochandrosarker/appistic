@@ -1,29 +1,49 @@
 import crypto from "node:crypto";
 import { cookies } from "next/headers";
+import { and, eq, gt, isNull } from "drizzle-orm";
+import { db } from "./db";
+import { sessions } from "./schema";
 
-const SECRET = process.env.AUTH_SECRET || "appistic-dev-secret-change-me";
 export const COOKIE = "apst_session";
+export { hashPassword, verifyPassword } from "./password";
 
-export function hashPassword(pw: string) {
-  return crypto.createHash("sha256").update(`appistic:${SECRET}:${pw}`).digest("hex");
+function digestToken(token: string) {
+  return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-export function signSession(userId: string, days = 30) {
-  const exp = Date.now() + days * 86400_000;
-  const payload = `${userId}.${exp}`;
-  const sig = crypto.createHmac("sha256", SECRET).update(payload).digest("base64url");
-  return `${payload}.${sig}`;
+export function sessionCookieOptions(days = 30) {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: days * 86400,
+    path: "/",
+  };
 }
 
-export function verifySession(token: string | undefined): string | null {
+export async function createSession(userId: string, days = 30) {
+  const token = crypto.randomBytes(32).toString("base64url");
+  await db.insert(sessions).values({
+    userId,
+    tokenHash: digestToken(token),
+    expiresAt: new Date(Date.now() + days * 86400_000),
+  });
+  return token;
+}
+
+export async function revokeSession(token: string | undefined) {
+  if (!token) return;
+  await db.update(sessions).set({ revokedAt: new Date() }).where(and(eq(sessions.tokenHash, digestToken(token)), isNull(sessions.revokedAt)));
+}
+
+export async function verifySession(token: string | undefined): Promise<string | null> {
   if (!token) return null;
-  const parts = token.split(".");
-  if (parts.length !== 3) return null;
-  const [userId, exp, sig] = parts;
-  const expect = crypto.createHmac("sha256", SECRET).update(`${userId}.${exp}`).digest("base64url");
-  if (sig.length !== expect.length || !crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expect))) return null;
-  if (Number(exp) < Date.now()) return null;
-  return userId;
+  const [session] = await db
+    .select({ userId: sessions.userId })
+    .from(sessions)
+    .where(and(eq(sessions.tokenHash, digestToken(token)), gt(sessions.expiresAt, new Date()), isNull(sessions.revokedAt)))
+    .limit(1);
+  return session?.userId || null;
 }
 
 export async function currentUserId(): Promise<string | null> {

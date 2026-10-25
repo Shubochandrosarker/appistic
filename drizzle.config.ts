@@ -1,10 +1,12 @@
 import type { Config } from "drizzle-kit";
 
-export default {
+const config = {
   schema: "./src/lib/schema.ts",
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL || "postgres://bos_app:AppPG2026Strong!x@127.0.0.1:55432/bos_app",
+    url: process.env.DATABASE_URL || "postgres://appistic_dev:appistic_dev@127.0.0.1:5432/appistic_dev",
   },
 };
+
+export default config;

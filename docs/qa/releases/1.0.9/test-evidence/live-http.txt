@@ -1,0 +1,11 @@
+Appistic v1.0.9 post-commit HTTP smoke evidence
+Tested SHA: e1337ec0f1a4c44fe58b5e58adf0d815177e446e
+Run date: 2026-10-23 Asia/Dhaka
+Environment: local Next.js dev server on http://localhost:3300 with isolated
+PostgreSQL and synthetic account/card data.
+Result: PASS.
+Observed statuses: signup 200; first card 200; second card 200; third Free
+card 402; publish 200; public track 200; owner analytics 200; anonymous
+analytics 401; public card 200; QR redirect 302; cross-origin mutation 403;
+lead capture 200. The QR redirect resolved to the canonical local `/c/` page.
+No real customer data or provider calls were used.

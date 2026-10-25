@@ -1,0 +1,8 @@
+Appistic v1.0.9 isolated printed-QR compatibility evidence
+Tested SHA: e1337ec0f1a4c44fe58b5e58adf0d815177e446e
+Run date: 2026-10-23 Asia/Dhaka
+Environment: local Next.js dev server, isolated synthetic cards, desktop browser.
+Result: PASS.
+Direct visit fixture stats: exactly 1 view and 0 qr_scan.
+QR visit fixture stats: exactly 1 view and 1 qr_scan after `/t/[slug]` redirect.
+Both pages rendered successfully with no browser console errors.
