@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type LinkItem = { type: string; label: string; url: string };
 type ProductItem = { title: string; price: string; url: string; image: string; desc: string };
@@ -33,6 +33,11 @@ export default function EditorClient({ initial }: { initial: CardData }) {
   const [saved, setSaved] = useState(false);
   const [err, setErr] = useState("");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latest = useRef(c);
+
+  useEffect(() => {
+    latest.current = c;
+  }, [c]);
 
   function set<K extends keyof CardData>(k: K, v: CardData[K]) {
     setC((p) => ({ ...p, [k]: v }));
@@ -43,10 +48,15 @@ export default function EditorClient({ initial }: { initial: CardData }) {
     timer.current = setTimeout(() => save(patch), 900);
   }
   async function save(patch: Partial<CardData> = {}) {
+    if (timer.current) {
+      clearTimeout(timer.current);
+      timer.current = null;
+    }
+    const current = latest.current;
     const res = await fetch(`/api/cards/${c.id}`, {
       method: "PATCH",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ ...c, ...patch }),
+      body: JSON.stringify({ ...current, ...patch }),
     });
     if (res.ok) {
       setSaved(true);

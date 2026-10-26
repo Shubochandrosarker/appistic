@@ -81,7 +81,7 @@ export default function DashboardClient({
 
       {showUpgrade && (
         <div className="a-card mt-4 p-5" style={{ borderColor: "var(--acc)" }}>
-          <p className="text-sm font-semibold">Free plan = 1 card.</p>
+          <p className="text-sm font-semibold">Free plan = 2 cards.</p>
           <p className="mt-1 text-sm a-mut">Pro gives you 10 cards, unlimited leads and CSV export — $5/mo.</p>
           <Link href="/dashboard/billing" className="a-btn mt-3 inline-block px-5 py-2.5 text-sm">See Pro</Link>
         </div>
