@@ -7,3 +7,4 @@ node_modules/
 *.log
 drizzle/meta
 next-env.d.ts
+.firecrawl/

@@ -31,6 +31,7 @@ html, body { background: var(--bg); color: var(--txt); }
 .a-btn:hover { filter: brightness(1.07); }
 .a-btn:active { transform: scale(.98); }
 .a-btn:disabled { opacity: .5; }
+.a-btn:focus-visible, .a-ghost:focus-visible, .a-input:focus-visible { outline: 3px solid rgba(234, 58, 46, 0.28); outline-offset: 3px; }
 .a-ghost {
   background: #fff;
   color: var(--txt);
@@ -53,3 +54,12 @@ html, body { background: var(--bg); color: var(--txt); }
 .a-input::placeholder { color: #9aa1b1; }
 .a-input:focus { border-color: var(--acc); }
 .a-mut { color: var(--mut); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
