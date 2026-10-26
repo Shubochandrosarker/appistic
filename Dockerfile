@@ -18,6 +18,8 @@ RUN addgroup -S app && adduser -S app -G app
 COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 COPY --from=build /app/drizzle ./drizzle
+COPY --from=deps /app/node_modules/postgres ./node_modules/postgres
+COPY scripts/migrate.mjs ./scripts/migrate.mjs
 USER app
 EXPOSE 3300
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "node scripts/migrate.mjs && node server.js"]
